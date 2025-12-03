@@ -1,96 +1,89 @@
-# Welcome to Your Miaoda Project
-Miaoda Application Link URL
-    URL:https://medo.dev/projects/app-7zb2zo8aiqdd
+# Threat Intelligence Feed Processor
 
-# Welcome to Your Miaoda Project
+This repository hosts the **Supabase-powered React dashboard** together with the **Flask-assisted IP intelligence helper** (`app.py`). The UI correlates threat feeds, logs, and alerts, while `app.py` directly queries AbuseIPDB and AlienVault OTX for spot checks.
 
-## Project Info
+## Architecture & Stack
 
-## Project Directory
+- **Frontend**: Vite + React 18 + TypeScript with shadcn/ui and Tailwind CSS (`src/App.tsx`, `src/routes.tsx`).
+- **Data**: Supabase (PostgreSQL + Realtime + Authible) via `src/db/supabase.ts` and the RPCs described in `src/db/api.ts`.
+- **Backend helper**: Flask + Requests (`app.py`) exposes a simple web form for checking individual IP addresses.
 
-```
-├── README.md # Documentation
-├── components.json # Component library configuration
-├── eslint.config.js # ESLint configuration
-├── index.html # Entry file
-├── package.json # Package management
-├── postcss.config.js # PostCSS configuration
-├── public # Static resources directory
-│   ├── favicon.png # Icon
-│   └── images # Image resources
-├── src # Source code directory
-│   ├── App.tsx # Entry file
-│   ├── components # Components directory
-│   ├── context # Context directory
-│   ├── db # Database configuration directory
-│   ├── hooks # Common hooks directory
-│   ├── index.css # Global styles
-│   ├── layout # Layout directory
-│   ├── lib # Utility library directory
-│   ├── main.tsx # Entry file
-│   ├── routes.tsx # Routing configuration
-│   ├── pages # Pages directory
-│   ├── services # Database interaction directory
-│   ├── types # Type definitions directory
-├── tsconfig.app.json # TypeScript frontend configuration file
-├── tsconfig.json # TypeScript configuration file
-├── tsconfig.node.json # TypeScript Node.js configuration file
-└── vite.config.ts # Vite configuration file
-```
-
-## Tech Stack
-
-Vite, TypeScript, React, Supabase
-
-## Development Guidelines
-
-### How to edit code locally?
-
-You can choose [VSCode](https://code.visualstudio.com/Download) or any IDE you prefer. The only requirement is to have Node.js and npm installed.
-
-### Environment Requirements
+## Repository Snapshot
 
 ```
-# Node.js ≥ 20
-# npm ≥ 10
-Example:
-# node -v   # v20.18.3
-# npm -v    # 10.8.2
+├── app.py                 # Flask entry point for AbuseIPDB & OTX checks
+├── package.json           # Node scripts (lint-only) and dependency list
+├── src/
+│   ├── App.tsx            # React router shell
+│   ├── db/supabase.ts     # Supabase client initializer
+│   ├── db/api.ts          # Supabase queries and RPC wrappers
+│   └── pages/             # Feature pages (Dashboard, IOCs, Alerts, etc.)
+├── public/                # Static assets for the Vite app
+├── README.md              # This document
+└── tsconfig*.json         # TypeScript configurations
 ```
 
-### Installing Node.js on Windows
+## Prerequisites
 
-```
-# Step 1: Visit the Node.js official website: https://nodejs.org/, click download. The website will automatically suggest a suitable version (32-bit or 64-bit) for your system.
-# Step 2: Run the installer: Double-click the downloaded installer to run it.
-# Step 3: Complete the installation: Follow the installation wizard to complete the process.
-# Step 4: Verify installation: Open Command Prompt (cmd) or your IDE terminal, and type `node -v` and `npm -v` to check if Node.js and npm are installed correctly.
-```
+| Tool | Minimum Version |
+| --- | --- |
+| Node.js | 20.0.0 |
+| npm | 10.0.0 |
+| Python | 3.11 |
 
-### Installing Node.js on macOS
+Ensure `node -v`, `npm -v`, and `python -V` report the required versions before proceeding.
 
-```
-# Step 1: Using Homebrew (Recommended method): Open Terminal. Type the command `brew install node` and press Enter. If Homebrew is not installed, you need to install it first by running the following command in Terminal:
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-Alternatively, use the official installer: Visit the Node.js official website. Download the macOS .pkg installer. Open the downloaded .pkg file and follow the prompts to complete the installation.
-# Step 2: Verify installation: Open Command Prompt (cmd) or your IDE terminal, and type `node -v` and `npm -v` to check if Node.js and npm are installed correctly.
-```
+## Environment Configuration
 
-### After installation, follow these steps:
+1. **Frontend (Supabase)**
+   - Create a `.env` (or use the existing `.env`) with your Supabase credentials:
 
-```
-# Step 1: Download the code package
-# Step 2: Extract the code package
-# Step 3: Open the code package with your IDE and navigate into the code directory
-# Step 4: In the IDE terminal, run the command to install dependencies: npm i
-# Step 5: In the IDE terminal, run the command to start the development server: npm run dev -- --host 127.0.0.1
-# Step 6: if step 5 failed, try this command to start the development server: npx vite --host 127.0.0.1
-```
+     ```env
+     VITE_SUPABASE_URL=https://<your-project>.supabase.co
+     VITE_SUPABASE_ANON_KEY=<your-anon-key>
+     ```
 
-### How to develop backend services?
+   - The React app reads these values from `src/db/supabase.ts` to initialize the client.
 
-Configure environment variables and install relevant dependencies.If you need to use a database, please use the official version of Supabase.
+2. **Backend helper (`app.py`)**
+   - `app.py` currently embeds API keys for AbuseIPDB and AlienVault OTX. Replace the literal strings inside the `home` route if you want to use your own credentials.
 
-## Learn More
+## Setup Steps
 
-You can also check the help documentation: Download and Building the app（ [https://intl.cloud.baidu.com/en/doc/MIAODA/s/download-and-building-the-app-en](https://intl.cloud.baidu.com/en/doc/MIAODA/s/download-and-building-the-app-en)）to learn more detailed content.
+1. **Install frontend dependencies**
+   ```cmd
+   npm install
+   ```
+
+2. **Install backend dependencies**
+   ```cmd
+   python -m pip install flask requests
+   ```
+
+## Running
+
+1. **Start the Flask helper** (exposes `http://localhost:5000/`):
+
+   ```cmd
+   python app.py
+   ```
+
+2. **Run the React/Supabase UI** (lint script performs static checks + test build; there is no `dev` script):
+
+   ```cmd
+   npm run lint
+   ```
+
+   - If you just want to preview the UI, run `npx vite` after installing dependencies (and while the Flask helper runs in parallel).
+
+## How to Extend
+
+- Add Supabase tables or RPCs inside the `src/db` helpers, then surface them through the `src/pages` components.
+- Modify `routes.tsx` to expose new pages. The router already guards unknown paths with a redirect to `/`.
+- Hook into the Flask helper for batch IP checks or convert it into a Supabase Edge Function if you need tighter coupling.
+
+## Troubleshooting
+
+- If Supabase queries fail, ensure your `.env` variables match the project, and review `src/db/api.ts` for expected tables.
+- Running `npm run lint` may output `CssSyntaxError` or TypeScript errors; fix these before building or deploying.
+- The Flask helper returns JSON from AbuseIPDB and OTX; network connectivity is required.
