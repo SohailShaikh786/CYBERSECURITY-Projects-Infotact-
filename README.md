@@ -71,7 +71,7 @@ Ensure `node -v`, `npm -v`, and `python -V` report the required versions before 
 2. **Run the React/Supabase UI** (lint script performs static checks + test build; there is no `dev` script):
 
    ```cmd
-   npm run lint
+   npm run lint or npx vite
    ```
 
    - If you just want to preview the UI, run `npx vite` after installing dependencies (and while the Flask helper runs in parallel).
