@@ -1,51 +1,65 @@
-import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import routes from "../../routes";
+import { Link, useLocation } from 'react-router-dom';
+import { Shield, Menu } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import routes from '@/routes';
 
-const Header: React.FC = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+export default function Header() {
   const location = useLocation();
-  const navigation = routes.filter((route) => route.visible !== false);
+
+  const visibleRoutes = routes.filter((route) => route.visible !== false);
 
   return (
-    <header className="bg-white shadow-md sticky top-0 z-10">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex items-center">
-            <Link to="/" className="flex-shrink-0 flex items-center">
-              {/* Please replace with your website logo */}
-              <img
-                className="h-8 w-auto"
-                src={`https://miaoda-site-img.cdn.bcebos.com/placeholder/code_logo_default.png`}
-                alt="Website logo"
-              />
-              {/* Please replace with your website name */}
-              <span className="ml-2 text-xl font-bold text-blue-600">
-                Website Name
-              </span>
-            </Link>
-          </div>
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
+      <div className="container flex h-16 items-center">
+        <Link to="/" className="flex items-center gap-2 font-bold text-xl">
+          <Shield className="h-6 w-6 text-primary" />
+          <span className="hidden sm:inline-block">ThreatIntel</span>
+        </Link>
 
-          {/* When there's only one page, you can remove the entire navigation section */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navigation.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`px-3 py-2 text-base font-medium rounded-md ${
-                  location.pathname === item.path
-                    ? "text-blue-600 bg-blue-50"
-                    : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                } transition duration-300`}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </div>
+        <nav className="hidden xl:flex items-center gap-6 ml-8">
+          {visibleRoutes.map((route) => (
+            <Link
+              key={route.path}
+              to={route.path}
+              className={`text-sm font-medium transition-colors hover:text-primary ${
+                location.pathname === route.path
+                  ? 'text-primary'
+                  : 'text-muted-foreground'
+              }`}
+            >
+              {route.name}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="ml-auto flex items-center gap-4">
+          <Sheet>
+            <SheetTrigger asChild className="xl:hidden">
+              <Button variant="ghost" size="icon">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right">
+              <nav className="flex flex-col gap-4 mt-8">
+                {visibleRoutes.map((route) => (
+                  <Link
+                    key={route.path}
+                    to={route.path}
+                    className={`text-sm font-medium transition-colors hover:text-primary ${
+                      location.pathname === route.path
+                        ? 'text-primary'
+                        : 'text-muted-foreground'
+                    }`}
+                  >
+                    {route.name}
+                  </Link>
+                ))}
+              </nav>
+            </SheetContent>
+          </Sheet>
         </div>
-      </nav>
+      </div>
     </header>
   );
-};
-
-export default Header;
+}
